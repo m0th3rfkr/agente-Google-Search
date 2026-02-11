@@ -2,20 +2,19 @@
 import requests
 import os
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-
 def geocode_location(location_text: str):
     """
     Convierte una ubicación en texto (ej. 'Houston, TX')
     en coordenadas latitud / longitud usando Google Geocoding API
     """
-    if not GOOGLE_API_KEY:
+    google_api_key = os.getenv("GOOGLE_API_KEY")
+    if not google_api_key:
         raise ValueError("GOOGLE_API_KEY no está configurada")
 
     url = "https://maps.googleapis.com/maps/api/geocode/json"
     params = {
         "address": location_text,
-        "key": GOOGLE_API_KEY
+        "key": google_api_key
     }
 
     response = requests.get(url, params=params, timeout=30)
@@ -32,4 +31,3 @@ def geocode_location(location_text: str):
         "lng": location["lng"],
         "formatted_address": formatted_address
     }
-
