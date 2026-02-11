@@ -2,6 +2,7 @@
 import json
 import os
 import time
+import requests
 import streamlit as st
 
 from extractors.geocode import geocode_location
@@ -10,10 +11,10 @@ from extractors.place_details import get_place_details
 from composer.report_builder import build_report
 
 st.set_page_config(page_title="Agente Google Search UI", layout="wide")
-st.title("Agente Google Search – UI")
-st.caption("Mete keyword + ubicación, corre el agente, ve tiempos y outputs (raw/report).")
 
-# ---- Session defaults ----
+# ------------------------
+# SESSION STATE
+# ------------------------
 if "raw" not in st.session_state:
     st.session_state.raw = None
 if "report" not in st.session_state:
@@ -21,58 +22,92 @@ if "report" not in st.session_state:
 if "elapsed" not in st.session_state:
     st.session_state.elapsed = None
 
+# ------------------------
+# AUTOCOMPLETE FUNCTION
+# ------------------------
+def location_suggestions(text: str):
+    if not text or len(text) < 2:
+        return []
+
+    key = os.getenv("GOOGLE_API_KEY")
+    if not key:
+        return []
+
+    url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
+    params = {
+        "input": text,
+        "types": "(cities)",
+        "key": key
+    }
+
+    r = requests.get(url, params=params, timeout=20).json()
+    predictions = r.get("predictions") or []
+    return [p.get("description") for p in predictions]
+
+# ------------------------
+# UI
+# ------------------------
+st.title("Agente Google Search – UI")
+st.caption("Keyword + ubicación → análisis automático SEO")
+
 with st.sidebar:
     st.header("Parámetros")
+
     keyword = st.text_input("Keyword", value="meat market")
-    location_text = st.text_input("Ubicación", value="Houston, TX")
+
+    location_text = st.text_input("Ubicación", value="Houston, TX", key="loc_input")
+
+    suggestions = location_suggestions(location_text)
+    if suggestions:
+        selected = st.selectbox("Sugerencias", suggestions)
+        if selected != location_text:
+            st.session_state.loc_input = selected
+            location_text = selected
+
     radius_m = st.number_input("Radio (metros)", min_value=1000, max_value=100000, value=30000, step=1000)
-    top_n = st.number_input("Top N negocios", min_value=1, max_value=20, value=6, step=1)
+    top_n = st.number_input("Top N negocios", min_value=1, max_value=20, value=6)
 
     st.divider()
     api_ok = bool(os.getenv("GOOGLE_API_KEY"))
-    st.write("API Key:", "✅ Detectada" if api_ok else "❌ No detectada (export GOOGLE_API_KEY=...)")
+    st.write("API Key:", "✅ Detectada" if api_ok else "❌ No detectada")
 
-run = st.button("🚀 Correr agente", type="primary", use_container_width=True)
+run = st.button("🚀 Correr agente", use_container_width=True)
 
+# ------------------------
+# RUN AGENT
+# ------------------------
 if run:
     if not os.getenv("GOOGLE_API_KEY"):
-        st.error("No hay GOOGLE_API_KEY en el entorno. Exporta la variable y vuelve a correr.")
+        st.error("No hay GOOGLE_API_KEY configurada.")
         st.stop()
 
-    t0 = time.time()
-    progress = st.progress(0, text="Iniciando...")
+    start_time = time.time()
+    progress = st.progress(0)
 
-    progress.progress(10, text="Geocoding ubicación...")
+    # Geocode
+    progress.progress(15)
     geo = geocode_location(location_text)
     lat = geo["lat"]
     lng = geo["lng"]
     formatted_location = geo.get("formatted_address") or location_text
 
-    progress.progress(30, text="Buscando negocios (Places Text Search)...")
+    # Search places
+    progress.progress(35)
     places = search_places(keyword, lat, lng, radius_m=int(radius_m))
     places = [p for p in places if p.get("place_id")][: int(top_n)]
 
-    progress.progress(55, text="Sacando detalles + reseñas (Place Details)...")
+    # Details
+    progress.progress(60)
     places_details = []
-    for i, p in enumerate(places, start=1):
+    for p in places:
         try:
             details = get_place_details(p["place_id"])
             places_details.append(details)
-        except Exception as e:
-            places_details.append({
-                "place_id": p.get("place_id"),
-                "name": p.get("name"),
-                "rating": None,
-                "reviews_count": None,
-                "address": p.get("formatted_address"),
-                "maps_url": None,
-                "reviews": [],
-                "error": str(e)
-            })
-        progress.progress(55 + int(35 * (i / max(1, len(places)))), text=f"Detalles: {i}/{len(places)}")
+        except Exception:
+            continue
 
-    progress.progress(93, text="Construyendo reporte...")
-
+    # Build report
+    progress.progress(85)
     raw = {
         "keyword": keyword,
         "location_text": location_text,
@@ -82,40 +117,39 @@ if run:
         "top_n": int(top_n),
         "places": places_details
     }
+
     report = build_report(keyword, location_text, formatted_location, places_details)
 
     st.session_state.raw = raw
     st.session_state.report = report
-    st.session_state.elapsed = time.time() - t0
+    st.session_state.elapsed = time.time() - start_time
 
-    progress.progress(100, text="Listo ✅")
+    progress.progress(100)
 
-# ---- Render results if present ----
+# ------------------------
+# SHOW RESULTS
+# ------------------------
 if st.session_state.raw and st.session_state.report:
-    st.success(f"Listo. Tiempo total: {st.session_state.elapsed:.2f} segundos")
+    st.success(f"Tiempo total: {st.session_state.elapsed:.2f} segundos")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Raw (datos crudos)")
+        st.subheader("Raw JSON")
         st.json(st.session_state.raw)
         st.download_button(
-            "⬇️ Descargar raw.json",
-            data=json.dumps(st.session_state.raw, ensure_ascii=False, indent=2),
-            file_name="raw.json",
-            mime="application/json",
-            key="dl_raw"
+            "⬇ Descargar raw.json",
+            json.dumps(st.session_state.raw, indent=2, ensure_ascii=False),
+            "raw.json"
         )
 
     with col2:
-        st.subheader("Report (reporte final)")
+        st.subheader("Reporte Final")
         st.json(st.session_state.report)
         st.download_button(
-            "⬇️ Descargar report.json",
-            data=json.dumps(st.session_state.report, ensure_ascii=False, indent=2),
-            file_name="report.json",
-            mime="application/json",
-            key="dl_report"
+            "⬇ Descargar report.json",
+            json.dumps(st.session_state.report, indent=2, ensure_ascii=False),
+            "report.json"
         )
 else:
-    st.info("Corre el agente para ver resultados aquí.")
+    st.info("Corre el agente para ver resultados.")
