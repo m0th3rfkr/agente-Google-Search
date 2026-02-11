@@ -1,0 +1,231 @@
+{
+  "seo_optimization": {
+    "query": "meat market | Houston, TX, USA",
+    "google_search_url": "https://www.google.com/search?q=meat+market+Houston%2C+TX",
+    "current_position": 1,
+    "target_top": 10,
+    "objective_6_months": "Top 10",
+    "potential_clients_per_month": 0,
+    "projected_annual_revenue": ""
+  },
+  "competitive_reviews": {
+    "reviews_analyzed_total": 30,
+    "premium_quality_comparison": [
+      {
+        "name": "Carniceria Prime Meat Market",
+        "score": 69
+      },
+      {
+        "name": "Farmer's Fresh Meat Market",
+        "score": 66
+      },
+      {
+        "name": "B & W Meat Company",
+        "score": 66
+      },
+      {
+        "name": "El Rey Meat Market",
+        "score": 60
+      },
+      {
+        "name": "Wild Fork Meat & Seafood Market - Tanglewood",
+        "score": 57
+      },
+      {
+        "name": "La Familia Meat Market",
+        "score": 56
+      }
+    ],
+    "client_top_products": [
+      {
+        "product": "ribeye",
+        "mentions": 1
+      }
+    ],
+    "featured_testimonial": {
+      "text": "Got 2 ribeye steaks. Yes only one in the picture because the other was so damn delicious it didn't last. Excellent prices even better meat. Will be back next time I am in the area.",
+      "source_place": "Farmer's Fresh Meat Market"
+    }
+  },
+  "places_detail": [
+    {
+      "name": "Farmer's Fresh Meat Market",
+      "role": "CLIENTE",
+      "rating": 4.6,
+      "reviews_count": 2211,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": [
+        {
+          "product": "ribeye",
+          "mentions": 1
+        }
+      ]
+    },
+    {
+      "name": "Carniceria Prime Meat Market",
+      "role": "Competencia",
+      "rating": 4.9,
+      "reviews_count": 694,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": []
+    },
+    {
+      "name": "La Familia Meat Market",
+      "role": "Competencia",
+      "rating": 4.4,
+      "reviews_count": 145,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": [
+        {
+          "product": "tacos",
+          "mentions": 1
+        },
+        {
+          "product": "tamales",
+          "mentions": 1
+        }
+      ]
+    },
+    {
+      "name": "B & W Meat Company",
+      "role": "Competencia",
+      "rating": 4.6,
+      "reviews_count": 1861,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": []
+    },
+    {
+      "name": "El Rey Meat Market",
+      "role": "Competencia",
+      "rating": 4.4,
+      "reviews_count": 243,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": []
+    },
+    {
+      "name": "Wild Fork Meat & Seafood Market - Tanglewood",
+      "role": "Competencia",
+      "rating": 4.7,
+      "reviews_count": 101,
+      "strengths": [],
+      "weaknesses": [],
+      "top_products": []
+    }
+  ],
+  "comparison_table": [
+    {
+      "name": "Farmer's Fresh Meat Market",
+      "role": "CLIENTE",
+      "stars": [
+        "ribeye"
+      ],
+      "summary": "",
+      "best_comment": "Got 2 ribeye steaks. Yes only one in the picture because the other was so damn delicious it didn't last. Excellent prices even better meat. Will be back next time I am in the area.",
+      "worst_finding": ""
+    },
+    {
+      "name": "Carniceria Prime Meat Market",
+      "role": "Competencia",
+      "stars": [],
+      "summary": "",
+      "best_comment": "",
+      "worst_finding": ""
+    },
+    {
+      "name": "La Familia Meat Market",
+      "role": "Competencia",
+      "stars": [
+        "tacos",
+        "tamales"
+      ],
+      "summary": "",
+      "best_comment": "They have a fresh meat display, fresh vegetables display, hot prepared food, a multitude of dried herbs & spices, many bagged snacks like chips, chilled bottled drinks like beers, sodas, water, & more. The friendly personnel speaks English and Spanish. We enjoyed our visit.",
+      "worst_finding": ""
+    },
+    {
+      "name": "B & W Meat Company",
+      "role": "Competencia",
+      "stars": [],
+      "summary": "",
+      "best_comment": "I love me some B&W meat market I live in Missouri City  but I’m from the North and I go once a month to get my meat from my hometown store Sorry buds,Pyburn’s and o lan o’s it’s a No for me……This is the best meat market on the north and fresh and clean.",
+      "worst_finding": ""
+    },
+    {
+      "name": "El Rey Meat Market",
+      "role": "Competencia",
+      "stars": [],
+      "summary": "",
+      "best_comment": "The food they sell is very tasty, the cooks are excellent, and the customer service is very good.",
+      "worst_finding": ""
+    },
+    {
+      "name": "Wild Fork Meat & Seafood Market - Tanglewood",
+      "role": "Competencia",
+      "stars": [],
+      "summary": "",
+      "best_comment": "Warning!!!!\nThis place sells frozen products only! We placed an order through their website, where most of the items looked completely fresh. When the delivery arrived at our home, we discovered that all of the products were frozen.\n\nWe contacted the company immediately and explained that everything was frozen and that we wanted to return the entire order and receive a refund. It’s important to note that we did not open any of the packages — everything remained sealed.\n\nWe were told that returns are not allowed, even though we contacted them almost immediately after receiving the order. We asked to speak with a manager and were told that someone would get back to us… we are still waiting.\n\nBe aware that the customer service is extremely poor as well.",
+      "worst_finding": ""
+    }
+  ],
+  "strategic_insight": {
+    "headline": "Ultra Premium vs Premium Prime: oportunidad real",
+    "what_they_value": [
+      "Calidad Prime",
+      "Frescura garantizada",
+      "Servicio personalizado",
+      "Precios justos"
+    ],
+    "what_they_dont_mention": [
+      "Wagyu",
+      "Tomahawk",
+      "Picaña"
+    ]
+  },
+  "gmb_plan": {
+    "actions": [
+      {
+        "priority": "alta",
+        "title": "Subir MÁS fotografías",
+        "description": "Curaduría completa: preparación, staff, productos, instalaciones.",
+        "deliverable": "30+ fotos por ubicación"
+      },
+      {
+        "priority": "alta",
+        "title": "Campaña de Keywords",
+        "description": "Optimizar señales y términos objetivo en el perfil.",
+        "deliverable": "Keywords + ejecución"
+      },
+      {
+        "priority": "media",
+        "title": "Información Completa y Actualizada",
+        "description": "Auditoría de horarios, descripción, servicios.",
+        "deliverable": "Checklist 100%"
+      },
+      {
+        "priority": "media",
+        "title": "Plan de Respuesta a Reviews",
+        "description": "Responder todas las reseñas en <24h.",
+        "deliverable": "Protocolo + templates"
+      }
+    ],
+    "vip_opportunity": {
+      "reviewer": "",
+      "profile": "",
+      "situation": "",
+      "strategy": "",
+      "why_it_matters": ""
+    },
+    "urgent_recovery": {
+      "reviewer": "",
+      "problem": "",
+      "plan": "Contacto personal + compensación + seguimiento para intentar edición/actualización de reseña",
+      "related_complaints": []
+    },
+    "goal": "Convertir review negativo en positivo"
+  }
+}
