@@ -23,42 +23,81 @@ if "elapsed" not in st.session_state:
     st.session_state.elapsed = None
 
 # ------------------------
-# AUTOCOMPLETE
+# AUTOCOMPLETE (cities + regions + countries)
 # ------------------------
-def location_suggestions(text: str):
+def location_suggestions(text: str, country: str | None):
     if not text or len(text) < 2:
         return []
+
     key = os.getenv("GOOGLE_API_KEY")
     if not key:
         return []
+
+    # Autocomplete general: sirve para ciudad/estado/región/país
     url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
-    params = {"input": text, "types": "(cities)", "key": key}
+    params = {
+        "input": text,
+        "types": "(regions)",   # clave: incluye estados/regiones/países y muchas ciudades también
+        "key": key
+    }
+
+    # filtro opcional por país (ej: "us" o "mx")
+    if country and country != "ALL":
+        params["components"] = f"country:{country.lower()}"
+
     r = requests.get(url, params=params, timeout=20).json()
     preds = r.get("predictions") or []
-    return [p.get("description") for p in preds if p.get("description")]
+
+    out = []
+    for p in preds:
+        desc = p.get("description")
+        if desc:
+            out.append(desc)
+
+    # quitar duplicados conservando orden
+    seen = set()
+    dedup = []
+    for x in out:
+        if x not in seen:
+            seen.add(x)
+            dedup.append(x)
+
+    return dedup[:15]
 
 # ------------------------
 # UI
 # ------------------------
 st.title("Agente Google Search – UI")
-st.caption("Keyword + ubicación → análisis automático SEO (con sugerencias de ubicación)")
+st.caption("Keyword + ubicación → análisis automático SEO (autocomplete para ciudad/estado/región/país)")
 
 with st.sidebar:
     st.header("Parámetros")
 
     keyword = st.text_input("Keyword", value="meat market")
-    typed_location = st.text_input("Ubicación (escribe)", value="Houston, TX")
 
-    sugs = location_suggestions(typed_location)
+    # filtro país opcional (ALL = sin filtro)
+    country = st.selectbox(
+        "País (opcional)",
+        ["ALL", "US", "MX", "CA", "ES", "AR", "CO", "CL", "PE"],
+        index=0
+    )
+
+    typed_location = st.text_input("Ubicación (escribe)", value="California")
+
+    sugs = location_suggestions(typed_location, country)
+
     chosen_location = None
     if sugs:
-        chosen_location = st.selectbox("Sugerencias (elige una)", ["(usar lo escrito)"] + sugs, index=0)
+        chosen_location = st.selectbox(
+            "Sugerencias (elige una)",
+            ["(usar lo escrito)"] + sugs,
+            index=0
+        )
 
-    # ubicación final que se usará al correr
+    # ubicación final a usar
+    location_text = typed_location
     if chosen_location and chosen_location != "(usar lo escrito)":
         location_text = chosen_location
-    else:
-        location_text = typed_location
 
     radius_m = st.number_input("Radio (metros)", min_value=1000, max_value=100000, value=30000, step=1000)
     top_n = st.number_input("Top N negocios", min_value=1, max_value=20, value=6, step=1)
@@ -114,6 +153,7 @@ if run:
         "keyword": keyword,
         "location_text": location_text,
         "formatted_location": formatted_location,
+        "country_filter": country,
         "center": {"lat": lat, "lng": lng},
         "radius_m": int(radius_m),
         "top_n": int(top_n),
@@ -157,4 +197,4 @@ if st.session_state.raw and st.session_state.report:
             key="dl_report"
         )
 else:
-    st.info("Corre el agente para ver resultados aquí.")
+    st.info("Tip: escribe una ubicación y luego Enter/click fuera para que aparezcan sugerencias.")
